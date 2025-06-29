@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QGridLayout, QDialogButtonBox, QLabel
 from PyQt5.QtGui import QKeySequence, QWindow
 import win32gui  # Used to access window handle (hwnd)
 from pathlib import Path
+import os
 
 
 class VisualizeFormatDialog(QDialog):
@@ -129,7 +130,23 @@ class MainWindow(QMainWindow):
 
         if file_dialog.exec():
             selected_files = file_dialog.selectedFiles()
-            self.selected_file = Path(selected_files[0])
+            if selected_files:
+                selected_path = Path(selected_files[0])
+
+                # 🛡 Check if the file exists and is readable
+                if not selected_path.exists() or not os.access(selected_path, os.R_OK):
+                    QMessageBox.critical(
+                        self,
+                        "File Access Error",
+                        f"Cannot read the selected file:\n\n{selected_path}\n\n"
+                        "This may be due to missing permissions or a OneDrive sync issue.\n"
+                        "Please ensure the file is locally available and readable."
+                    )
+                    self.selected_file = Path("")  # Clear selection
+                    return
+
+                self.selected_file = selected_path
+
 
     def update_vis(self):
         # This will update the Open3D visualization (polling events and rendering)
