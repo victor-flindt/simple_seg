@@ -31,7 +31,8 @@ class VisualizeFormatDialog(QDialog):
         layout.addWidget(self.combo_box)
 
         # Add OK/Cancel buttons
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok |
+                                            QDialogButtonBox.Cancel, self)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
         layout.addWidget(self.button_box)
